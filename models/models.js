@@ -26,13 +26,6 @@ var sequelize = new Sequelize(DB_name, user, pwd,
                     }
                   );
 
-// Usar BBDD SQLite
-// var sequelize = new Sequelize(null, null, null,
-//                        {
-//                        dialect: "sqlite", storage: "quiz.sqlite"
-//                        }
-//                    );
-
 // Importar la definición de la tabla Quiz en quiz.js
 var Quiz = sequelize.import(path.join(__dirname, 'quiz'));
 
@@ -40,14 +33,14 @@ var Quiz = sequelize.import(path.join(__dirname, 'quiz'));
 exports.Quiz = Quiz;
 
 sequelize.sync().then(function() {          // sequelize.sync() crea e inicializa tabla de preguntas en DB
-//sequelize.sync().success(function() {     // ¡¡¡EL MÉTODO "SUCCESS" NO EXISTE EN VERSIONES MÁS ACTUALES DEL MÓDULO SEQUELIZE. SE SUSTITUYE POR MÉTODO "THEN"!!!
-  Quiz.count().then(function (count){       // success(..) ejecuta el manejador una vez creada la tabla
-  //Quiz.count().success(function (count){  // ¡¡¡EL MÉTODO "SUCCESS" NO EXISTE EN VERSIONES MÁS ACTUALES DEL MÓDULO SEQUELIZE. SE SUSTITUYE POR MÉTODO "THEN"!!!
+  Quiz.count().then(function (count){       // then(..) ejecuta el manejador una vez creada la tabla
     if(count === 0) {                       // La tabla se inicializa sólo si está vacía
-      Quiz.create({ pregunta: 'Capital de Italia',
-                    respuesta: 'Roma'
-                  })
-      .then(function(){console.log('Base de datos inicializada')});
+      Quiz.bulkCreate(
+        [
+          { pregunta: 'Capital de Italia', respuesta: 'Roma'},
+          { pregunta: 'Capital de Portugal', respuesta: 'Lisboa'}
+        ]
+      ).then(function(){console.log('Base de datos inicializada')});
     };
   });
 });
