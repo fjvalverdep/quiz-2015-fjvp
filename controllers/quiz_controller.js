@@ -18,7 +18,7 @@ exports.load = function(req, res, next, quizId) {
 exports.index = function(req, res) {
   models.Quiz.findAll().then(function(quizes) {
     res.render('quizes/index.ejs', { quizes: quizes, errors: []});
-  }).catch(function(error) { next(error);})
+  }).catch(function(error) { next(error);});
 };
 
 // GET /quizes/:id
@@ -38,7 +38,8 @@ exports.answer = function(req, res) {
 // GET /quizes/new
 exports.new = function(req, res) {
   var quiz = models.Quiz.build(
-    {pregunta: "Pregunta", respuesta: "Respuesta"}
+    //{pregunta: "Pregunta", respuesta: "Respuesta"}
+    {pregunta: "Pregunta", respuesta: "Respuesta", tematica: "Tematica"}
   );
 
   res.render('quizes/new', {quiz: quiz, errors: []});
@@ -53,7 +54,8 @@ exports.create = function(req, res) {
       if (err) {
         res.render('quizes/new', {quiz: quiz, errors: err.errors});
       } else {
-        quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){
+        //quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){
+          quiz.save({fields: ["pregunta", "respuesta", "tematica"]}).then(function(){
           res.redirect('/quizes')
         })
       }  // res.redirect: Redirección HTTP a lista de preguntas
@@ -71,12 +73,14 @@ exports.edit = function(req, res) {
 exports.update = function(req, res) {
 	req.quiz.pregunta = req.body.quiz.pregunta;
 	req.quiz.respuesta = req.body.quiz.respuesta;
+  req.quiz.tematica = req.body.quiz.tematica;
 
 	req.quiz.validate().then(function(err){
 			if (err) {
 				res.render('quizes/edit', {quiz: quiz, errors: err.errors});
 			} else { //save: Guarda campos pregunta y respuesta de DB
-				req.quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){
+        //req.quiz.save({fields: ["pregunta", "respuesta"]}).then(function(){
+				req.quiz.save({fields: ["pregunta", "respuesta", "tematica"]}).then(function(){
           res.redirect('/quizes');});
 			} // Redirección HTTP a lista de preguntas (URL relativo)
 		}
@@ -88,7 +92,7 @@ exports.destroy = function(req, res) {
 	req.quiz.destroy().then( function() {
 		res.redirect('/quizes');
 	}).catch(function(error){next(error)});
-}; 
+};
 
 //GET /creditos
 exports.author = function(req, res){

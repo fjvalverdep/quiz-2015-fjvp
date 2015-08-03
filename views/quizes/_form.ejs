@@ -4,5 +4,13 @@
 <label for="resp" class="rem">Respuesta:</label>
 <input type="text" id="resp" name="quiz[respuesta]" placeholder="<%= quiz.respuesta %>"/><br>
 
+<label for="tematica" class="rem">Temática:</label>
+	<select name="quiz[tematica]">
+		<% var opciones = ['Ciencia', 'Humanidades', 'Ocio', 'Tecnología', 'Otro']; %>
+		<% for (var i=0; i < opciones.length; i++) { %>
+		<option value="<%= opciones[i] %>" <% if (opciones[i]===quiz.tematica){ %> <%='selected' %> <% } %> > <%= opciones[i] %> </option>
+		<% } %>
+  </select><br>
+
 <a href="/quizes"><button type="button">Cancelar</button></a>
 <input type="submit" value="Guardar"/>
