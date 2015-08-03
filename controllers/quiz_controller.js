@@ -16,8 +16,13 @@ exports.load = function(req, res, next, quizId) {
 
 // GET /quizes
 exports.index = function(req, res) {
-  models.Quiz.findAll().then(function(quizes) {
-    res.render('quizes/index.ejs', { quizes: quizes, errors: []});
+    var busqueda_patron = req.query.search || "";
+    busqueda_patron = "%" + busqueda_patron.replace(/\s/gi, "%") + "%";
+
+    var busqueda_param = { where: ["pregunta like ?", busqueda_patron], order: 'pregunta ASC'};
+
+    models.Quiz.findAll(busqueda_param).then(function(quizes) {
+      res.render('quizes/index', { quizes: quizes, errors: []});
   }).catch(function(error) { next(error);});
 };
 
