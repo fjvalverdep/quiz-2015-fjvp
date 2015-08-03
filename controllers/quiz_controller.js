@@ -39,7 +39,7 @@ exports.answer = function(req, res) {
 exports.new = function(req, res) {
   var quiz = models.Quiz.build(
     //{pregunta: "Pregunta", respuesta: "Respuesta"}
-    {pregunta: "Pregunta", respuesta: "Respuesta", tematica: "Tematica"}
+    {pregunta: "Pregunta", respuesta: "Respuesta", tematica: ""}
   );
 
   res.render('quizes/new', {quiz: quiz, errors: []});
