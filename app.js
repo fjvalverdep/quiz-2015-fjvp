@@ -25,6 +25,25 @@ app.use(session());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+//middleware para el auto-logout
+app.use(function(req, res, next) {
+    if(req.session.user) {  // si hay usuario logado (hay una sesión activa)
+      if(!req.session.mySetTime) {  // si no está definida la variable "mySetTime"
+        req.session.mySetTime = (new Date()).getTime(); // definimos "mySetTime" con la hora del sistema
+      }
+      else {  // si la variable "mySetTime" ya está definida
+        if((new Date()).getTime() - req.session.mySetTime >15000){ // se comprueba el tiempo transcurrido, y si supera los 2 min. (2min=120000ms) se finaliza la sesión
+          delete req.session.user;  // Se borra el usuario
+          delete req.session.mySetTime; //  Se borra la variable de tiempo
+        }
+        else {  //Si no se ha superado el tiempo máximo -hay actividad en la sesión- se actualiza la captura de la hora del sistema
+          req.session.mySetTime = (new Date()).getTime();
+        }
+      }
+    }
+    next();
+});
+
 // Helpers dinámicos:
 app.use(function(req, res, next) {
 
